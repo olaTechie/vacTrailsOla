@@ -112,11 +112,15 @@ def app():
     else:
         st.write('All studies have been screened.')
 
-    # Export data button - moved outside the 'if study' block to make it always available
-    if st.button('Export Data'):
-        export_data = pd.read_sql('SELECT * FROM studies', conn)
-        export_data.to_csv('./screening_results.csv', index=False)
-        st.markdown('Download the screened data [here](./screening_results.csv).')
+    # Export data button - updated to use st.download_button
+    export_data = pd.read_sql('SELECT * FROM studies', conn)
+    csv = export_data.to_csv(index=False).encode()
+    st.download_button(
+        label="Download Data",
+        data=csv,
+        file_name="screening_results.csv",
+        mime="text/csv"
+    )
 
     conn.close()
 
